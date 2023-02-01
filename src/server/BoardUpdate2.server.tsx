@@ -182,10 +182,10 @@ function Main(data: any) {
 }
 
 const data = access();
-const parent = Workspace.Display.SurfaceGui;
-const handle = Roact.mount(Main(data), parent);
+const parent = Workspace.FindFirstChild("Display")?.FindFirstChild("SurfaceGui");
+let handle = Roact.mount(Main(data), parent);
 
 while (wait(1)) {
 	const data = access();
-	const handle = Roact.update(handle, Main(data));
+	handle = Roact.update(handle, Main(data));
 }
