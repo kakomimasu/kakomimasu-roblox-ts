@@ -1,7 +1,5 @@
-import { HttpService } from "@rbxts/services";
+import { HttpService, Workspace } from "@rbxts/services";
 import Roact from '@rbxts/roact';
-
-const BoardManager = require(script.Parent.ModuleScript);
 
 const FREE_COLOR = new Color3(1, 1, 1);
 
@@ -29,7 +27,7 @@ const URL = "https://api.kakomimasu.com/v1/matches?sort=startedAtUnixTime&limit=
 function access() {
 	const success, data = pcall(() => {
 		const response = HttpService.GetAsync(URL);
-		const game = HttpService.JSONDecode(response);
+		const game = HttpService.JSONDecode(response) as any[];
 		return game[1];
 	});
 	return data;
@@ -39,7 +37,7 @@ function Board(data: any) {
 	if (!data.gaming && !data.ending) {
 		return Roact.createFragment({})
 	}
-	const cells = [] as any[];
+	const cells = [];
 	const width = data.board.width;
 	const height = data.board.height;
 	const xs = 1 / width;
@@ -48,19 +46,19 @@ function Board(data: any) {
 	BoardManager.update(data);
 	
 	const layout = Roact.createElement("UIGridLayout", {
-		FillDirectionMaxCells = width,
-		SortOrder = "LayoutOrder",
-		CellSize = UDim2.new(xs, 0, ys, 0),
-		CellPadding = UDim2.new(0, 0, 0, 0) 
+		FillDirectionMaxCells: width,
+		SortOrder: "LayoutOrder",
+		CellSize: new UDim2(xs, 0, ys, 0),
+		CellPadding: new UDim2(0, 0, 0, 0) 
 	});
-	table.insert(cells, layout);
+	cells.push(layout);
 	
 	for (let y = 1; y < height; y++) {
 		for (let x = 1; x < width; x++) {
 			const n = (y - 1) * width + x;
 			const point = data.board.points[n];
 			const tile = data.tiled[n];
-			const playerImage, cellColor;
+			let playerImage, cellColor;
 			if (tile.player != null) {
 				const player = PLAYER[tile.player + 1];
 				playerImage = player.image;
@@ -73,38 +71,38 @@ function Board(data: any) {
 			
 			if (playerImage) {
 				const cellImage = Roact.createElement("ImageLabel", {
-					Image = playerImage,
-					BackgroundTransparency = 1,
-					Size = UDim2.new(1, 0, 1, 0)
-				})
-				table.insert(cellContents, cellImage)
+					Image: playerImage,
+					BackgroundTransparency: 1,
+					Size: new UDim2(1, 0, 1, 0)
+				});
+				cellContents.push(cellImage);
 			}
 			
 			const cellText = Roact.createElement("TextLabel", {
-				Text = point,
-				Size = UDim2.new(1, 0, 1, 0),
-				TextScaled = true,
-				TextSize = 9999,
-				BackgroundTransparency = 1,
-				TextXAlignment = "Right",
-				TextYAlignment = "Bottom"
+				Text: point,
+				Size: new UDim2(1, 0, 1, 0),
+				TextScaled: true,
+				TextSize: 9999,
+				BackgroundTransparency: 1,
+				TextXAlignment: "Right",
+				TextYAlignment: "Bottom"
 			})
-			table.insert(cellContents, cellText)
+			cellContents.push(cellText);
 			
 			const cell = Roact.createElement("Frame", {
-				BackgroundColor3 = cellColor,
-				LayoutOrder = n
+				BackgroundColor3: cellColor,
+				LayoutOrder: n
 			}, cellContents)
-			table.insert(cells, cell)
+			cells.push(cell);
 		}
 	}
 
 	return Roact.createElement("Frame", {
-			Position = UDim2.new(0, 0, 0, 400),
-			Size = UDim2.new(1, 0, 1, -400)
-		}, {
+			Position: new UDim2(0, 0, 0, 400),
+			Size: new UDim2(1, 0, 1, -400)
+		}, [
 			Roact.createFragment(cells)
-	})
+		])
 }
 
 function Status(data: any) {
@@ -119,11 +117,11 @@ function Status(data: any) {
 	}
 
 	return Roact.createElement("TextLabel", {
-		Position = new UDim2(0, 0, 0, 0),
-		Size = new UDim2(1, 0, 0, 200),
-		Text = text,
-		TextScaled = true,
-		BackgroundColor3 = new Color3(1, 1, 1)
+		Position: new UDim2(0, 0, 0, 0),
+		Size: new UDim2(1, 0, 0, 200),
+		Text: text,
+		TextScaled: true,
+		BackgroundColor3: new Color3(1, 1, 1)
 	})
 }
 
@@ -183,7 +181,7 @@ function Main(data: any) {
 }
 
 const data = access();
-const parent = workspace.Display.SurfaceGui;
+const parent = Workspace.Display.SurfaceGui;
 const handle = Roact.mount(Main(data), parent);
 
 while (wait(1)) {
