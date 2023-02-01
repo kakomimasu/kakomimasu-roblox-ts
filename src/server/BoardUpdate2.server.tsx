@@ -59,7 +59,7 @@ function Board(data: any) {
 			const point = data.board.points[n];
 			const tile = data.tiled[n];
 			let playerImage, cellColor;
-			if (tile.player != undefined) {
+			if (tile.player !== undefined) {
 				const player = PLAYER[tile.player + 1];
 				playerImage = player.image;
 				cellColor = Color3.fromHex(player.color[tile.type + 1]);
