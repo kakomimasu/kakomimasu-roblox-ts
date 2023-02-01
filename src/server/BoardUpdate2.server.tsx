@@ -35,7 +35,7 @@ function access() {
 
 function Board(data: any) {
 	if (!data.gaming && !data.ending) {
-		return Roact.createFragment({})
+		return Roact.createFragment([]);
 	}
 	const cells = [];
 	const width = data.board.width;
