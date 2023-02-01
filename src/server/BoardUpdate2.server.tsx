@@ -47,7 +47,7 @@ function Board(data: any) {
 	
 	const layout = Roact.createElement("UIGridLayout", {
 		FillDirectionMaxCells: width,
-		SortOrder: "LayoutOrder",
+		SortOrder: Enum.SortOrder.LayoutOrder,
 		CellSize: new UDim2(xs, 0, ys, 0),
 		CellPadding: new UDim2(0, 0, 0, 0) 
 	});
