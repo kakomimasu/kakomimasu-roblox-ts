@@ -1,7 +1,11 @@
 import { HttpService, Workspace } from "@rbxts/services";
-import Roact, { Fragment } from "@rbxts/roact";
+import Roact from "@rbxts/roact";
 import * as BoardManager from "./BoardManager";
 import { Game, User } from "@kakomimasu/client-js";
+
+interface MyComponentProps {
+	data: Game;
+}
 
 const FREE_COLOR = new Color3(1, 1, 1);
 
@@ -35,9 +39,9 @@ function access() {
 	return result[1] as Game;
 }
 
-function Board(data: Game) {
+function Board({ data }: MyComponentProps) {
 	if ((!data.gaming && !data.ending) || !data.board || !data.tiled) {
-		return Roact.createFragment([]);
+		return <></>;
 	}
 	const cells = [];
 	const width = data.board.width;
@@ -47,12 +51,14 @@ function Board(data: Game) {
 
 	BoardManager.update(data);
 
-	const layout = Roact.createElement("UIGridLayout", {
-		FillDirectionMaxCells: width,
-		SortOrder: Enum.SortOrder.LayoutOrder,
-		CellSize: new UDim2(xs, 0, ys, 0),
-		CellPadding: new UDim2(0, 0, 0, 0),
-	});
+	const layout = (
+		<uigridlayout
+			FillDirectionMaxCells={width}
+			SortOrder={Enum.SortOrder.LayoutOrder}
+			CellSize={new UDim2(xs, 0, ys, 0)}
+			CellPadding={new UDim2(0, 0, 0, 0)}
+		/>
+	);
 	cells.push(layout);
 
 	for (let y = 1; y < height; y++) {
@@ -75,48 +81,42 @@ function Board(data: Game) {
 			const cellContents = [];
 
 			if (playerImage) {
-				const cellImage = Roact.createElement("ImageLabel", {
-					Image: playerImage,
-					BackgroundTransparency: 1,
-					Size: new UDim2(1, 0, 1, 0),
-				});
+				const cellImage = (
+					<imagelabel Image={playerImage} BackgroundTransparency={1} Size={new UDim2(1, 0, 1, 0)} />
+				);
 				cellContents.push(cellImage);
 			}
 
-			const cellText = Roact.createElement("TextLabel", {
-				Text: "" + point,
-				Size: new UDim2(1, 0, 1, 0),
-				TextScaled: true,
-				TextSize: 9999,
-				BackgroundTransparency: 1,
-				TextXAlignment: Enum.TextXAlignment.Right,
-				TextYAlignment: Enum.TextYAlignment.Bottom,
-			});
+			const cellText = (
+				<textlabel
+					Text={"" + point}
+					Size={new UDim2(1, 0, 1, 0)}
+					TextScaled={true}
+					TextSize={9999}
+					BackgroundTransparency={1}
+					TextXAlignment={Enum.TextXAlignment.Right}
+					TextYAlignment={Enum.TextYAlignment.Bottom}
+				/>
+			);
 			cellContents.push(cellText);
 
-			const cell = Roact.createElement(
-				"Frame",
-				{
-					BackgroundColor3: cellColor,
-					LayoutOrder: n,
-				},
-				cellContents,
+			const cell = (
+				<frame BackgroundColor3={cellColor} LayoutOrder={n}>
+					{cellContents}
+				</frame>
 			);
 			cells.push(cell);
 		}
 	}
 
-	return Roact.createElement(
-		"Frame",
-		{
-			Position: new UDim2(0, 0, 0, 400),
-			Size: new UDim2(1, 0, 1, -400),
-		},
-		[Roact.createFragment(cells)],
+	return (
+		<frame Position={new UDim2(0, 0, 0, 400)} Size={new UDim2(1, 0, 1, -400)}>
+			<>{cells}</>
+		</frame>
 	);
 }
 
-function Status(data: Game) {
+function Status({ data }: MyComponentProps) {
 	let text = "";
 
 	if (data.gaming || data.ending) {
@@ -127,13 +127,15 @@ function Status(data: Game) {
 		text = "ポイント:" + point1 + "対" + point2 + " ターン:" + data.turn + "/" + data.totalTurn;
 	}
 
-	return Roact.createElement("TextLabel", {
-		Position: new UDim2(0, 0, 0, 0),
-		Size: new UDim2(1, 0, 0, 200),
-		Text: text,
-		TextScaled: true,
-		BackgroundColor3: new Color3(1, 1, 1),
-	});
+	return (
+		<textlabel
+			Position={new UDim2(0, 0, 0, 0)}
+			Size={new UDim2(1, 0, 0, 200)}
+			Text={text}
+			TextScaled={true}
+			BackgroundColor3={new Color3(1, 1, 1)}
+		/>
+	);
 }
 
 function getUser(userId: string) {
@@ -146,7 +148,7 @@ function getUser(userId: string) {
 	return result[1] as User;
 }
 
-function PlayerName(data: Game) {
+function PlayerName({ data }: MyComponentProps) {
 	let text = "";
 
 	let player1Name = "";
@@ -173,24 +175,32 @@ function PlayerName(data: Game) {
 		text = player1Name + "対" + player2Name;
 	}
 
-	return Roact.createElement("TextLabel", {
-		Position: new UDim2(0, 0, 0, 200),
-		Size: new UDim2(1, 0, 0, 200),
-		Text: text,
-		TextScaled: true,
-		BackgroundColor3: new Color3(1, 1, 1),
-	});
+	return (
+		<textlabel
+			Position={new UDim2(0, 0, 0, 200)}
+			Size={new UDim2(1, 0, 0, 200)}
+			Text={text}
+			TextScaled={true}
+			BackgroundColor3={new Color3(1, 1, 1)}
+		/>
+	);
 }
 
-function Main(data: Game) {
-	return Roact.createFragment([Status(data), PlayerName(data), Board(data)]);
+function Main({ data }: MyComponentProps) {
+	return (
+		<>
+			<Status data={data} />
+			<PlayerName data={data} />
+			<Board data={data} />
+		</>
+	);
 }
 
 const data = access();
 const parent = Workspace.FindFirstChild("Display")?.FindFirstChild("SurfaceGui");
-let handle = Roact.mount(Main(data), parent);
+let handle = Roact.mount(<Main data={data} />, parent);
 
 while (wait(1)) {
 	const data = access();
-	handle = Roact.update(handle, Main(data));
+	handle = Roact.update(handle, <Main data={data} />);
 }
