@@ -29,8 +29,8 @@ const URL = "https://api.kakomimasu.com/v1/matches?sort=startedAtUnixTime&limit=
 function access() {
 	const result = pcall(() => {
 		const response = HttpService.GetAsync(URL);
-		const game = HttpService.JSONDecode(response) as Game[];
-		return game[1];
+		const game2 = HttpService.JSONDecode(response) as Game[];
+		return game2[1];
 	});
 	return result[1] as Game;
 }
