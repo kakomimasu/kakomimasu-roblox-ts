@@ -23,6 +23,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@kakomimasu/client-js": "github:kakomimasu/client-js#v1.0.0-beta.12",
     "@rbxts/roact": "^1.4.4-ts.0",
     "@rbxts/services": "^1.5.1"
   }
