@@ -1,5 +1,7 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import Roact from "@rbxts/roact";
+import * as BoardManager from "./BoardManager";
+import { Game } from "@kakomimasu/client-js";
 
 const FREE_COLOR = new Color3(1, 1, 1);
 
@@ -33,8 +35,8 @@ function access() {
 	return result[1];
 }
 
-function Board(data: any) {
-	if (!data.gaming && !data.ending) {
+function Board(data: Game) {
+	if ((!data.gaming && !data.ending) || !data.board || !data.tiled) {
 		return Roact.createFragment([]);
 	}
 	const cells = [];
@@ -58,8 +60,11 @@ function Board(data: any) {
 			const n = (y - 1) * width + x;
 			const point = data.board.points[n];
 			const tile = data.tiled[n];
+			if (!tile) {
+				continue;
+			}
 			let playerImage, cellColor;
-			if (tile.player !== undefined) {
+			if (tile.player !== undefined && tile.player) {
 				const player = PLAYER[tile.player + 1];
 				playerImage = player.image;
 				cellColor = Color3.fromHex(player.color[tile.type + 1]);
@@ -79,7 +84,7 @@ function Board(data: any) {
 			}
 
 			const cellText = Roact.createElement("TextLabel", {
-				Text: point,
+				Text: "" + point,
 				Size: new UDim2(1, 0, 1, 0),
 				TextScaled: true,
 				TextSize: 9999,
@@ -111,7 +116,7 @@ function Board(data: any) {
 	);
 }
 
-function Status(data: any) {
+function Status(data: Game) {
 	let text = "";
 
 	if (data.gaming || data.ending) {
@@ -141,7 +146,7 @@ function getUser(userId: string) {
 	return result[1];
 }
 
-function PlayerName(data: any) {
+function PlayerName(data: Game) {
 	let text = "";
 
 	let player1Name = "";
@@ -153,9 +158,9 @@ function PlayerName(data: any) {
 
 		if (player1.type === "account") {
 			// account player
-			const user1 = getUser(player1.id) as any;
+			const user1 = getUser(player1.id);
 			player1Name = user1.screenName;
-			const user2 = getUser(player2.id) as any;
+			const user2 = getUser(player2.id);
 			player2Name = user2.screenName;
 		} else {
 			// guest player
@@ -177,7 +182,7 @@ function PlayerName(data: any) {
 	});
 }
 
-function Main(data: any) {
+function Main(data: Game) {
 	return Roact.createFragment([Status(data), PlayerName(data), Board(data)]);
 }
 
