@@ -1,7 +1,7 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import Roact from "@rbxts/roact";
 import * as BoardManager from "./BoardManager";
-import { Game } from "@kakomimasu/client-js";
+import { Game, User } from "@kakomimasu/client-js";
 
 const FREE_COLOR = new Color3(1, 1, 1);
 
@@ -29,10 +29,10 @@ const URL = "https://api.kakomimasu.com/v1/matches?sort=startedAtUnixTime&limit=
 function access() {
 	const result = pcall(() => {
 		const response = HttpService.GetAsync(URL);
-		const game = HttpService.JSONDecode(response) as any[];
+		const game = HttpService.JSONDecode(response) as Game[];
 		return game[1];
 	});
-	return result[1];
+	return result[1] as Game;
 }
 
 function Board(data: Game) {
@@ -143,7 +143,7 @@ function getUser(userId: string) {
 		const json = HttpService.JSONDecode(response);
 		return json;
 	});
-	return result[1];
+	return result[1] as User;
 }
 
 function PlayerName(data: Game) {
