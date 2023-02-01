@@ -148,9 +148,9 @@ function PlayerName(data: any) {
 		
 		if (player1.type == "account") {
 			// account player
-			const user1 = getUser(player1.id);
+			const user1 = getUser(player1.id) as any;
 			player1Name = user1.screenName;
-			const user2 = getUser(player2.id);
+			const user2 = getUser(player2.id) as any;
 			player2Name = user2.screenName;
 		} else {
 			// guest player
