@@ -1,5 +1,5 @@
 import { HttpService, Workspace } from "@rbxts/services";
-import Roact from "@rbxts/roact";
+import Roact, { Fragment } from "@rbxts/roact";
 import * as BoardManager from "./BoardManager";
 import { Game, User } from "@kakomimasu/client-js";
 
