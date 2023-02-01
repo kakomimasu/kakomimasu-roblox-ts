@@ -25,12 +25,12 @@ const PLAYER = [
 const URL = "https://api.kakomimasu.com/v1/matches?sort=startedAtUnixTime&limit=1";
 
 function access() {
-	const success, data = pcall(() => {
+	const result = pcall(() => {
 		const response = HttpService.GetAsync(URL);
 		const game = HttpService.JSONDecode(response) as any[];
 		return game[1];
 	});
-	return data;
+	return result[1];
 }
 
 function Board(data: any) {
@@ -127,12 +127,12 @@ function Status(data: any) {
 
 function getUser(userId: string) {
 	const usersURL = "https://api.kakomimasu.com/v1/users/" + userId;
-	const success, data = pcall(() => {
+	const result = pcall(() => {
 		const response = HttpService.GetAsync(usersURL);
 		const json = HttpService.JSONDecode(response);
 		return json;
 	})
-	return data;
+	return result[1];
 }
 
 
@@ -164,20 +164,20 @@ function PlayerName(data: any) {
 	}
 
 	return Roact.createElement("TextLabel", {
-		Position = new UDim2(0, 0, 0, 200),
-		Size = new UDim2(1, 0, 0, 200),
-		Text = text,
-		TextScaled = true,
-		BackgroundColor3 = new Color3(1, 1, 1)
+		Position: new UDim2(0, 0, 0, 200),
+		Size: new UDim2(1, 0, 0, 200),
+		Text: text,
+		TextScaled: true,
+		BackgroundColor3: new Color3(1, 1, 1)
 	})
 }
 
 function Main(data: any) {
-	return Roact.createFragment({
+	return Roact.createFragment([
 		Status(data),
 		PlayerName(data),
 		Board(data)
-	})
+	]);
 }
 
 const data = access();
