@@ -1,9 +1,9 @@
 import { HttpService } from "@rbxts/services";
 import Roact from '@rbxts/roact';
 
-const BoardManager = require(script.Parent.ModuleScript)
+const BoardManager = require(script.Parent.ModuleScript);
 
-const FREE_COLOR = new Color3(1, 1, 1)
+const FREE_COLOR = new Color3(1, 1, 1);
 
 const PLAYER = [
 	{
@@ -22,7 +22,7 @@ const PLAYER = [
 		image: "rbxassetid://12194526006",
 		color: ["FFCF99", "ff8c00"]
 	}
-]
+];
 
 const URL = "https://api.kakomimasu.com/v1/matches?sort=startedAtUnixTime&limit=1";
 
@@ -32,27 +32,27 @@ function access() {
 		const game = HttpService.JSONDecode(response);
 		return game[1];
 	});
-	return data
+	return data;
 }
 
 function Board(data: any) {
 	if (!data.gaming && !data.ending) {
 		return Roact.createFragment({})
 	}
-	const cells = {};
+	const cells = [] as any[];
 	const width = data.board.width;
 	const height = data.board.height;
 	const xs = 1 / width;
 	const ys = 1 / height;
 	
-	BoardManager.update(data)
+	BoardManager.update(data);
 	
 	const layout = Roact.createElement("UIGridLayout", {
 		FillDirectionMaxCells = width,
 		SortOrder = "LayoutOrder",
 		CellSize = UDim2.new(xs, 0, ys, 0),
 		CellPadding = UDim2.new(0, 0, 0, 0) 
-	})
+	});
 	table.insert(cells, layout);
 	
 	for (let y = 1; y < height; y++) {
@@ -60,7 +60,7 @@ function Board(data: any) {
 			const n = (y - 1) * width + x;
 			const point = data.board.points[n];
 			const tile = data.tiled[n];
-			const playerImage, cellColor
+			const playerImage, cellColor;
 			if (tile.player != null) {
 				const player = PLAYER[tile.player + 1];
 				playerImage = player.image;
@@ -132,9 +132,9 @@ function getUser(userId: string) {
 	const success, data = pcall(() => {
 		const response = HttpService.GetAsync(usersURL);
 		const json = HttpService.JSONDecode(response);
-		return json
+		return json;
 	})
-	return data
+	return data;
 }
 
 
@@ -156,13 +156,13 @@ function PlayerName(data: any) {
 			player2Name = user2.screenName;
 		} else {
 			// guest player
-			player1Name = player1.id
-			player2Name = player2.id
+			player1Name = player1.id;
+			player2Name = player2.id;
 		}
 		
 		const point1 = player1.point.areaPoint + player1.point.wallPoint;
 		const point2 = player2.point.areaPoint + player2.point.wallPoint;
-		text = player1Name + "対" + player2Name
+		text = player1Name + "対" + player2Name;
 	}
 
 	return Roact.createElement("TextLabel", {
@@ -182,9 +182,9 @@ function Main(data: any) {
 	})
 }
 
-const data = access()
-const parent = workspace.Display.SurfaceGui
-const handle = Roact.mount(Main(data), parent)
+const data = access();
+const parent = workspace.Display.SurfaceGui;
+const handle = Roact.mount(Main(data), parent);
 
 while (wait(1)) {
 	const data = access();
