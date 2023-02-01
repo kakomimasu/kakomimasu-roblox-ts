@@ -84,8 +84,8 @@ function Board(data: any) {
 				TextScaled: true,
 				TextSize: 9999,
 				BackgroundTransparency: 1,
-				TextXAlignment: "Right",
-				TextYAlignment: "Bottom"
+				TextXAlignment: Enum.TextXAlignment.Right,
+				TextYAlignment: Enum.TextYAlignment.Bottom
 			})
 			cellContents.push(cellText);
 			
