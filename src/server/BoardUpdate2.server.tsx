@@ -1,7 +1,5 @@
-import { HttpService, ReplicatedStorage } from "@rbxts/services";
+import { HttpService } from "@rbxts/services";
 import Roact from '@rbxts/roact';
-
-const ReplicatedStorage = game.GetService("ReplicatedStorage");
 
 const BoardManager = require(script.Parent.ModuleScript)
 
@@ -168,11 +166,11 @@ function PlayerName(data: any) {
 	}
 
 	return Roact.createElement("TextLabel", {
-		Position = UDim2.new(0, 0, 0, 200),
-		Size = UDim2.new(1, 0, 0, 200),
+		Position = new UDim2(0, 0, 0, 200),
+		Size = new UDim2(1, 0, 0, 200),
 		Text = text,
 		TextScaled = true,
-		BackgroundColor3 = Color3.new(1, 1, 1)
+		BackgroundColor3 = new Color3(1, 1, 1)
 	})
 }
 
